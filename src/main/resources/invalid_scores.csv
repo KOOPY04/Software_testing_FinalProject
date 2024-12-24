@@ -1,0 +1,11 @@
+student_name,subject,score,weight
+Alice,Math,abc,0.3
+Bob,English,-10,0.3
+Charlie,Science,90,0.3
+Diana,Math,88,0.3
+Diana,History,80,0.1
+Eve,Math,100,0.3
+Eve,Science,105,0.3
+Alice,Science,xyz,0.3
+Bob,History,-5,0.1
+Charlie,Math,102,0.3
