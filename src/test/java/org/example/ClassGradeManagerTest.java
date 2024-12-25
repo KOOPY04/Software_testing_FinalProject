@@ -23,17 +23,25 @@ class ClassGradeManagerTest {
         weights.put("Science", 0.2);
         manager.setSubjectWeights(weights);
 
-        manager.addGrade("Alice", "Math", 90);
-        manager.addGrade("Alice", "English", 80);
-        manager.addGrade("Alice", "Science", 70);
+        manager.addGrade("Dodo", "Math", 90);
+        manager.addGrade("Dodo", "English", 80);
+        manager.addGrade("Dodo", "Science", 70);
 
-        manager.addGrade("Bob", "Math", 60);
-        manager.addGrade("Bob", "English", 70);
-        manager.addGrade("Bob", "Science", 80);
+        manager.addGrade("Xuan", "Math", 60);
+        manager.addGrade("Xuan", "English", 70);
+        manager.addGrade("Xuan", "Science", 80);
 
-        manager.addGrade("Charlie", "Math", 50);
-        manager.addGrade("Charlie", "English", 40);
-        manager.addGrade("Charlie", "Science", 30);
+        manager.addGrade("Koopy", "Math", 50);
+        manager.addGrade("Koopy", "English", 40);
+        manager.addGrade("Koopy", "Science", 30);
+
+        manager.addGrade("NienLin", "Math", 88);
+        manager.addGrade("NienLin", "English", 68);
+        manager.addGrade("NienLin", "Science", 77);
+
+        manager.addGrade("Jungwon", "Math", 92);
+        manager.addGrade("Jungwon", "English", 85);
+        manager.addGrade("Jungwon", "Science", 96);
     }
 
     @Test
@@ -45,26 +53,28 @@ class ClassGradeManagerTest {
 
     @Test
     void testAddGrade() {
-        manager.addGrade("David", "Math", 95);
-        assertEquals(95, manager.getGrade("David", "Math"));
+        manager.addGrade("NienLin", "Math", 95);
+        assertEquals(95, manager.getGrade("NienLin", "Math"));
     }
 
     @Test
     void testCalculateWeightedAverage() {
-        assertEquals(83.0, manager.calculateWeightedAverage("Alice"));
-        assertEquals(67.0, manager.calculateWeightedAverage("Bob"));
-        assertEquals(43.0, manager.calculateWeightedAverage("Charlie"));
+        assertEquals(83.0, manager.calculateWeightedAverage("Dodo"));
+        assertEquals(67.0, manager.calculateWeightedAverage("Xuan"));
+        assertEquals(43.0, manager.calculateWeightedAverage("Koopy"));
+        assertEquals(79.8, manager.calculateWeightedAverage("NienLin"));
+        assertEquals(90.7, manager.calculateWeightedAverage("Jungwon"));
     }
 
     @Test
     void testCalculateAllWeightedScores() {
         List<Double> scores = manager.calculateAllWeightedScores();
-        assertEquals(Arrays.asList(83.0, 67.0, 43.0), scores);
+        assertEquals(Arrays.asList(90.7, 83.0, 79.8, 67.0, 43.0), scores);
     }
 
     @Test
     void testFindStudentsByScoreRange() {
-        assertEquals(1, manager.findStudentsByScoreRange(80, 100).size());
+        assertEquals(2, manager.findStudentsByScoreRange(80, 100).size());
     }
 
     @Test
@@ -72,49 +82,55 @@ class ClassGradeManagerTest {
         Map<String, Long> distribution = manager.calculateWeightedScoreDistribution();
         assertEquals(1, distribution.get("0-59"));
         assertEquals(1, distribution.get("60-69"));
+        assertEquals(1, distribution.get("70-79"));
         assertEquals(1, distribution.get("80-89"));
-        assertEquals(0, distribution.get("90-100"));
+        assertEquals(1, distribution.get("90-100"));
     }
 
     @Test
     void testGetSortedWeightedScores() {
         List<Map.Entry<String, Double>> sortedScores = manager.getSortedWeightedScores();
-        assertEquals("Alice", sortedScores.get(0).getKey());
-        assertEquals(83.0, sortedScores.get(0).getValue());
-        assertEquals("Bob", sortedScores.get(1).getKey());
-        assertEquals(67.0, sortedScores.get(1).getValue());
-        assertEquals("Charlie", sortedScores.get(2).getKey());
-        assertEquals(43.0, sortedScores.get(2).getValue());
+        assertEquals("Jungwon", sortedScores.get(0).getKey());
+        assertEquals(90.7, sortedScores.get(0).getValue());
+        assertEquals("Dodo", sortedScores.get(1).getKey());
+        assertEquals(83.0, sortedScores.get(1).getValue());
+        assertEquals("NienLin", sortedScores.get(2).getKey());
+        assertEquals(79.8, sortedScores.get(2).getValue());
+        assertEquals("Xuan", sortedScores.get(3).getKey());
+        assertEquals(67.0, sortedScores.get(3).getValue());
+        assertEquals("Koopy", sortedScores.get(4).getKey());
+        assertEquals(43.0, sortedScores.get(4).getValue());
+
     }
 
     @Test
     void testCalculateWeightedAverageScore() {
-        assertEquals(64.3, manager.calculateWeightedAverageScore(), 0.1);
+        assertEquals(72.7, manager.calculateWeightedAverageScore(), 0.1);
     }
 
     @Test
     void testCalculateWeightedMedianScore() {
-        assertEquals(67.0, manager.calculateWeightedMedianScore());
+        assertEquals(79.8, manager.calculateWeightedMedianScore());
     }
 
     @Test
     void testCalculateWeightedStandardDeviation() {
-        assertEquals(16.4, manager.calculateWeightedStandardDeviation(), 0.1);
+        assertEquals(16.7, manager.calculateWeightedStandardDeviation(), 0.1);
     }
 
     @Test
     void testCalculateWeightedVariance() {
-        assertEquals(270.3, manager.calculateWeightedVariance(), 0.1);
+        assertEquals(279.0, manager.calculateWeightedVariance(), 0.1);
     }
 
     @Test
     void testCalculateWeightedIQR() {
-        assertEquals(40.0, manager.calculateWeightedIQR(), 0.1);
+        assertEquals(16, manager.calculateWeightedIQR(), 0.1);
     }
 
     @Test
     void testCalculateWeightedMax() {
-        assertEquals(83.0, manager.calculateWeightedMax());
+        assertEquals(90.7, manager.calculateWeightedMax());
     }
 
     @Test
@@ -125,56 +141,58 @@ class ClassGradeManagerTest {
     @Test
     void testCalculateAllWeightedPRs() {
         Map<String, Double> prs = manager.calculateAllWeightedPRs();
-        assertEquals(66.7, prs.get("Alice"), 0.1);
-        assertEquals(33.3, prs.get("Bob"), 0.1);
-        assertEquals(0.0, prs.get("Charlie"), 0.1);
+        assertEquals(80, prs.get("Jungwon"), 0.1);
+        assertEquals(60, prs.get("Dodo"), 0.1);
+        assertEquals(40, prs.get("NienLin"), 0.1);
+        assertEquals(20, prs.get("Xuan"), 0.1);
+        assertEquals(0.0, prs.get("Koopy"), 0.1);
     }
 
     @Test
     void testGetGrade() {
-        assertEquals(90, manager.getGrade("Alice", "Math"));
-        assertNull(manager.getGrade("Alice", "History"));
+        assertEquals(90, manager.getGrade("Dodo", "Math"));
+        assertNull(manager.getGrade("Dodo", "History"));
     }
 
     @Test
     void testGetSortedGradesBySubject() {
         List<Map.Entry<String, Integer>> sortedGrades = manager.getSortedGradesBySubject("Math");
-        assertEquals("Alice", sortedGrades.getFirst().getKey());
-        assertEquals(90, sortedGrades.getFirst().getValue());
+        assertEquals("Jungwon", sortedGrades.getFirst().getKey());
+        assertEquals(92, sortedGrades.getFirst().getValue());
     }
 
     @Test
     void testCalculateAverage() {
-        assertEquals(66.7, manager.calculateAverage("Math"), 0.1);
-        assertEquals(63.3, manager.calculateAverage("English"), 0.1);
-        assertEquals(60.0, manager.calculateAverage("Science"), 0.1);
+        assertEquals(76.0, manager.calculateAverage("Math"), 0.1);
+        assertEquals(68.6, manager.calculateAverage("English"), 0.1);
+        assertEquals(70.6, manager.calculateAverage("Science"), 0.1);
     }
 
     @Test
     void testCalculateMedian() {
-        assertEquals(60.0, manager.calculateMedian("Math"));
+        assertEquals(88.0, manager.calculateMedian("Math"));
         assertEquals(70.0, manager.calculateMedian("English"));
-        assertEquals(70.0, manager.calculateMedian("Science"));
+        assertEquals(77.0, manager.calculateMedian("Science"));
     }
 
     @Test
     void testCalculateStandardDeviation() {
-        assertEquals(16.99, manager.calculateStandardDeviation("Math"), 0.1);
+        assertEquals(17.5, manager.calculateStandardDeviation("Math"), 0.1);
     }
 
     @Test
     void testcalculateVariance() {
-        assertEquals(288.8, manager.calculateVariance("Math"), 0.1);
+        assertEquals(305.6, manager.calculateVariance("Math"), 0.1);
     }
 
     @Test
     void testCalculateIQR() {
-        assertEquals(40.0, manager.calculateIQR("Math"), 0.1);
+        assertEquals(30.0, manager.calculateIQR("Math"), 0.1);
     }
 
     @Test
     void testCalculateMax() {
-        assertEquals(90.0, manager.calculateMax("Math"), 0.1);
+        assertEquals(92.0, manager.calculateMax("Math"), 0.1);
     }
 
     @Test
@@ -184,8 +202,8 @@ class ClassGradeManagerTest {
 
     @Test
     void testCalculatePercentileRank(){
-        assertEquals(66.6, manager.calculatePercentileRank("Math", 90), 0.1);
-        assertEquals(33.3, manager.calculatePercentileRank("English", 70), 0.1);
+        assertEquals(60.0, manager.calculatePercentileRank("Math", 90), 0.1);
+        assertEquals(40.0, manager.calculatePercentileRank("English", 70), 0.1);
         assertEquals(0.0, manager.calculatePercentileRank("Science", 30), 0.1);
     }
 
@@ -201,10 +219,12 @@ class ClassGradeManagerTest {
 
     @Test
     void testSubjectGradeDistribution() {
-        Map<String, Long> distribution = manager.calculateSubjectGradeDistribution("Math", 20);
-        assertEquals(1, distribution.get("40-59"));
-        assertEquals(1, distribution.get("60-79"));
-        assertEquals(1, distribution.get("80-99"));
+        Map<String, Long> distribution = manager.calculateSubjectGradeDistribution("Math", 10);
+        assertEquals(1, distribution.get("50-59"));
+        assertEquals(1, distribution.get("60-69"));
+        assertEquals(0, distribution.get("70-79"));
+        assertEquals(1, distribution.get("80-89"));
+        assertEquals(2, distribution.get("90-99"));
     }
 
     @ParameterizedTest
