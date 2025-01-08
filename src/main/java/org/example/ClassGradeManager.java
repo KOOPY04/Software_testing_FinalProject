@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -11,12 +12,12 @@ public class ClassGradeManager {
     /**
      * 存儲學生成績的映射，外層 Map 的鍵是學生ID，內層 Map 的鍵是科目名稱，值是該科目的成績
      */
-    private final Map<String, Map<String, Integer>> studentGrades = new HashMap<>();
+    private final Map<String, Map<String, Integer>> studentGrades = new ConcurrentHashMap<>();
 
     /**
      * 存儲科目權重的映射，鍵是科目名稱，值是對應的權重（如影響最終分數的比例）
      */
-    private final Map<String, Double> subjectWeights = new HashMap<>();
+    private final Map<String, Double> subjectWeights = new ConcurrentHashMap<>();
 
     /**
      * 分數閾值：低於60分表示不及格
@@ -116,7 +117,7 @@ public class ClassGradeManager {
      * @return 初始的分佈映射
      */
     private Map<String, Long> initializeDistribution() {
-        final Map<String, Long> distribution = new HashMap<>();
+        final Map<String, Long> distribution = new ConcurrentHashMap<>();
         distribution.put("0-59", 0L);
         distribution.put("60-69", 0L);
         distribution.put("70-79", 0L);
@@ -360,7 +361,7 @@ public class ClassGradeManager {
      */
     public Map<String, Double> calculateAllWeightedPRs() {
         final List<Double> weightedScores = calculateAllWeightedScores();
-        final Map<String, Double> prs = new HashMap<>();
+        final Map<String, Double> prs = new ConcurrentHashMap<>();
 
         for (final String student : studentGrades.keySet()) {
             final double weightedScore = calculateWeightedAverage(student);
@@ -594,7 +595,7 @@ public class ClassGradeManager {
      * @return 分數區間與學生數量的映射
      */
     public Map<String, Long> calculateSubjectGradeDistribution(final String subject, final int interval) {
-        final Map<String, Long> distribution = new HashMap<>();
+        final Map<String, Long> distribution = new ConcurrentHashMap<>();
 
         // 找到最低和最高分數
         final int minGrade = studentGrades.values().stream()
@@ -609,9 +610,8 @@ public class ClassGradeManager {
 
         // 初始化所有可能的區段為0
         for (int i = (minGrade / interval) * interval; i <= maxGrade; i += interval) {
-            final int rangeStart = i;
             final int rangeEnd = i + interval - 1;
-            final String key = rangeStart + "-" + rangeEnd;
+            final String key = i + "-" + rangeEnd;
             distribution.put(key, 0L);
         }
 

@@ -7,9 +7,9 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 class ClassGradeManagerTest {
     private ClassGradeManager manager;
@@ -17,7 +17,7 @@ class ClassGradeManagerTest {
     @BeforeEach
     void setUp() {
         manager = new ClassGradeManager();
-        Map<String, Double> weights = new HashMap<>();
+        Map<String, Double> weights = new ConcurrentHashMap<>();
         weights.put("Math", 0.5);
         weights.put("English", 0.3);
         weights.put("Science", 0.2);
@@ -186,7 +186,7 @@ class ClassGradeManagerTest {
     }
 
     @Test
-    void testcalculateVariance() {
+    void testCalculateVariance() {
         assertEquals(305.6, manager.calculateVariance("Math"), 0.1);
     }
 
