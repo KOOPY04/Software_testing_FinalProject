@@ -75,6 +75,7 @@ class ClassGradeManagerTest {
     @Test
     void testFindStudentsByScoreRange() {
         assertEquals(2, manager.findStudentsByScoreRange(80, 100).size());
+        assertEquals(1, manager.findStudentsByScoreRange(0, 60).size());
     }
 
     @Test
@@ -111,6 +112,10 @@ class ClassGradeManagerTest {
     @Test
     void testCalculateWeightedMedianScore() {
         assertEquals(79.8, manager.calculateWeightedMedianScore());
+        manager.addGrade("Jay", "Math", 85);
+        manager.addGrade("Jay", "English", 90);
+        manager.addGrade("Jay", "Science", 75);
+        assertEquals(81.4, manager.calculateWeightedMedianScore());
     }
 
     @Test
@@ -187,7 +192,10 @@ class ClassGradeManagerTest {
 
     @Test
     void testCalculateIQR() {
-        assertEquals(30.0, manager.calculateIQR("Math"), 0.1);
+        manager.addGrade("Jay", "Math", 85);
+        manager.addGrade("Jack", "Math", 70);
+        manager.addGrade("Jayy", "Math", 75);
+        assertEquals(24.0, manager.calculateIQR("Math"), 0.1);
     }
 
     @Test
@@ -236,6 +244,8 @@ class ClassGradeManagerTest {
         double average = manager.calculateAverage(subject);
         double median = manager.calculateMedian(subject);
         double stdDev = manager.calculateStandardDeviation(subject);
+
+        double Quantile = manager.calculateIQR(subject);
 
         // 確保結果與新的四捨五入規則一致
         assertEquals(Math.round(average * 10) / 10.0, average, 0.1);

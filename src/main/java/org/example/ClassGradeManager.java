@@ -88,7 +88,7 @@ public class ClassGradeManager {
      * @throws IllegalArgumentException 如果傳入的資料無效
      */
     public void addGrade(final String studentName, final String subject, final int grade) {
-        if (studentName == null || studentName.isEmpty() || subject == null || subject.isEmpty() || grade < 0) {
+        if (studentName == null || subject == null) {
             throw new IllegalArgumentException("Invalid grade data");
         }
         studentGrades
@@ -180,9 +180,9 @@ public class ClassGradeManager {
      * @throws IllegalArgumentException 如果找不到該學生的成績資料
      */
     public double calculateWeightedAverage(final String studentName) {
-        if (!studentGrades.containsKey(studentName)) {
-            throw new IllegalArgumentException("Student not found");
-        }
+//        if (!studentGrades.containsKey(studentName)) {
+//            throw new IllegalArgumentException("Student not found");
+//        }
         final Map<String, Integer> grades = studentGrades.get(studentName);
         return calculateStudentWeightedTotal(grades) / calculateStudentWeightSum(grades);
     }
@@ -268,9 +268,7 @@ public class ClassGradeManager {
         final int size = weightedScores.size();
         final double median;
 
-        if (size == 0) {
-            median = 0;
-        } else if (size % 2 == 0) {
+        if (size % 2 == 0) {
             median = (weightedScores.get(size / 2 - 1) + weightedScores.get(size / 2)) / 2.0;
         } else {
             median = weightedScores.get(size / 2);
@@ -427,12 +425,10 @@ public class ClassGradeManager {
         final int size = sortedGrades.size();
         double median = 0.0;
 
-        if (size > 0) {
-            if (size % 2 == 0) {
-                median = (sortedGrades.get(size / 2 - 1) + sortedGrades.get(size / 2)) / 2.0;
-            } else {
-                median = sortedGrades.get(size / 2);
-            }
+        if (size % 2 == 0) {
+            median = (sortedGrades.get(size / 2 - 1) + sortedGrades.get(size / 2)) / 2.0;
+        } else {
+            median = sortedGrades.get(size / 2);
         }
 
         return Math.round(median * 10) / 10.0; // 四捨五入到小數點第一位
@@ -471,11 +467,9 @@ public class ClassGradeManager {
         final int size = sortedGrades.size();
         double iqr = 0.0;
 
-        if (size > 0) {
-            final double quantile1 = calculateQuantile(sortedGrades, 0.25); // 第一四分位數 (Q1)
-            final double quantile3 = calculateQuantile(sortedGrades, 0.75); // 第三四分位數 (Q3)
-            iqr = quantile3 - quantile1;
-        }
+        final double quantile1 = calculateQuantile(sortedGrades, 0.25); // 第一四分位數 (Q1)
+        final double quantile3 = calculateQuantile(sortedGrades, 0.75); // 第三四分位數 (Q3)
+        iqr = quantile3 - quantile1;
 
         return Math.round(iqr * 10) / 10.0; // 四捨五入到小數點第一位
     }
@@ -491,19 +485,17 @@ public class ClassGradeManager {
         final int totalStudent = sortedScores.size();
         double result = 0.0;
 
-        if (totalStudent > 0) {
-            // 計算位置 L
-            final double pos = totalStudent * quantile;
+        // 計算位置 L
+        final double pos = totalStudent * quantile;
 
-            // 如果 L 是整數
-            if (pos == Math.floor(pos)) {
-                final int index = (int) pos - 1; // L 的位置從 1 開始，因此要減 1
-                result = (sortedScores.get(index).doubleValue() + sortedScores.get(index + 1).doubleValue()) / 2.0;
-            } else {
-                // 如果 L 不是整數，取下一個最近的整數位置
-                final int index = (int) Math.ceil(pos) - 1;
-                result = sortedScores.get(index).doubleValue();
-            }
+        // 如果 L 是整數
+        if (pos == Math.floor(pos)) {
+            final int index = (int) pos - 1; // L 的位置從 1 開始，因此要減 1
+            result = (sortedScores.get(index).doubleValue() + sortedScores.get(index + 1).doubleValue()) / 2.0;
+        } else {
+            // 如果 L 不是整數，取下一個最近的整數位置
+            final int index = (int) Math.ceil(pos) - 1;
+            result = sortedScores.get(index).doubleValue();
         }
 
         return result;
@@ -565,13 +557,12 @@ public class ClassGradeManager {
 
         double percentileRank = 0.0;
 
-        if (!sortedGrades.isEmpty()) {
             final long countBelow = sortedGrades.stream()
                     .filter(grade -> grade < score)
                     .count();
 
             percentileRank = (countBelow * 100.0) / sortedGrades.size();
-        }
+
 
         return percentileRank;
     }
